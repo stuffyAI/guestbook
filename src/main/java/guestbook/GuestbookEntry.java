@@ -15,6 +15,8 @@
  */
 package guestbook;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
@@ -28,7 +30,7 @@ import org.springframework.util.Assert;
  *
  * @author Paul Henke
  * @author Oliver Drotbohm
- * @see https://en.wikipedia.org/wiki/Domain-driven_design#Building_blocks
+ * @see <a href="https://en.wikipedia.org/wiki/Domain-driven_design#Building_blocks">Domain driven Building blocks</a>
  */
 @Entity
 class GuestbookEntry {
@@ -36,6 +38,10 @@ class GuestbookEntry {
 	private @Id @GeneratedValue Long id;
 	private final String name, text;
 	private final LocalDateTime date;
+
+	private BufferedImage image;
+
+
 
 	/**
 	 * Creates a new {@link GuestbookEntry} for the given name and text.
@@ -53,11 +59,17 @@ class GuestbookEntry {
 		this.date = LocalDateTime.now();
 	}
 
+	public GuestbookEntry(String name, String text, BufferedImage image) {
+		this(name,text);
+		this.image = image;
+	}
+
 	@SuppressWarnings("unused")
 	private GuestbookEntry() {
 		this.name = null;
 		this.text = null;
 		this.date = null;
+		this.image = null;
 	}
 
 	public String getName() {
