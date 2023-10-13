@@ -34,6 +34,9 @@
 					</div>
 					<div class="card-body">
 						<blockquote class="entrytext" th:text="${entry.text}"></blockquote>
+						<div th:if="${entry.getImageData()!=null}">
+							<img th:src="@{'data:image/png;charset=utf-8;base64, '+${entry.getBase64ImageData()}}">
+						</div>
 					</div>
 					<div class="card-footer">
 						<footer class="date" th:text="${#temporals.format(entry.date, 'dd. MMMM yyyy - HH:mm')}">Datum</footer>
@@ -42,7 +45,7 @@
 			</div>
 		</div>
 
-		<form method="post" role="form" class="gb-form" id="form" hx:post="@{/guestbook}" hx-target="#entries" hx-swap="beforeend" _="on entryAdded me.reset()" th:action="@{/guestbook}" th:object="${form}">
+		<form method="post" role="form" class="gb-form" id="form" hx:post="@{/guestbook}" hx-target="#entries" hx-swap="beforeend" _="on entryAdded me.reset()" enctype="multipart/form-data" th:action="@{/guestbook}" th:object="${form}">
 			<div class="form-group">
 				<label for="name" th:text="#{guestbook.form.name}">Name</label><br /> 
 				<input class="form-control" type="text" th:field="*{name}" th:errorclass="is-invalid" required="required" />
@@ -51,6 +54,11 @@
 			<div class="form-group">
 				<label for="text" th:text="#{guestbook.form.text}">Text</label><br /> 
 				<textarea th:field="*{text}" th:errorclass="is-invalid" class="form-control" required="required"></textarea>
+				<div th:if="${#fields.hasErrors('text')}" class="invalid-feedback" th:text="#{guestbook.form.text.required}">Please provide a text.</div>
+			</div>
+			<div class="form-group">
+				<label for="image" th:text="#{guestbook.form.image}">Image</label><br />
+				<input accept="image/*" class="form-control" type="file" th:field="*{imageData}" th:errorclass="is-invalid"/>
 				<div th:if="${#fields.hasErrors('text')}" class="invalid-feedback" th:text="#{guestbook.form.text.required}">Please provide a text.</div>
 			</div>
 			<input type="submit" class="btn btn-secondary" th:value="#{guestbook.form.submit}" value="Senden" />

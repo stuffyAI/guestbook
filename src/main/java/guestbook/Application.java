@@ -15,6 +15,9 @@
  */
 package guestbook;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 import org.springframework.boot.CommandLineRunner;
@@ -57,10 +60,18 @@ public class Application {
 	@Bean
 	CommandLineRunner init(GuestbookRepository guestbook) {
 
+		//read test image to byte
+		byte[] testImageData;
+		try {
+			testImageData = Files.readAllBytes(Paths.get("src/main/resources/static/resources/css/images/image.jpg"));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
 		return args -> {
 
 			Stream.of( //
-					new GuestbookEntry("H4xx0r", "first!!!"), //
+					new GuestbookEntry("H4xx0r", "first!!!",testImageData), //
 					new GuestbookEntry("Arni", "Hasta la vista, baby"), //
 					new GuestbookEntry("Duke Nukem",
 							"It's time to kick ass and chew bubble gum. And I'm all out of gum."), //

@@ -23,6 +23,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.util.Assert;
 
 /**
@@ -39,7 +40,9 @@ class GuestbookEntry {
 	private final String name, text;
 	private final LocalDateTime date;
 
-	private BufferedImage image;
+	//lazy init
+	private byte[] imageData = new byte[0];
+
 
 
 
@@ -50,18 +53,17 @@ class GuestbookEntry {
 	 * @param text must not be {@literal null} or empty
 	 */
 	public GuestbookEntry(String name, String text) {
+		this(name,text,null);
+	}
 
+	public GuestbookEntry(String name, String text, byte[] imageData) {
 		Assert.hasText(name, "Name must not be null or empty!");
 		Assert.hasText(text, "Text must not be null or empty!");
 
 		this.name = name;
 		this.text = text;
 		this.date = LocalDateTime.now();
-	}
-
-	public GuestbookEntry(String name, String text, BufferedImage image) {
-		this(name,text);
-		this.image = image;
+		this.imageData = imageData;
 	}
 
 	@SuppressWarnings("unused")
@@ -69,7 +71,6 @@ class GuestbookEntry {
 		this.name = null;
 		this.text = null;
 		this.date = null;
-		this.image = null;
 	}
 
 	public String getName() {
@@ -86,5 +87,13 @@ class GuestbookEntry {
 
 	public String getText() {
 		return text;
+	}
+
+	public byte[] getImageData() {
+		return imageData;
+	}
+
+	public String getBase64ImageData(){
+		return Base64.encodeBase64String(this.imageData);
 	}
 }
