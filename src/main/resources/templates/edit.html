@@ -1,0 +1,41 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script th:src="@{/webjars/htmx.org/dist/htmx.min.js}"></script>
+    <script th:src="@{/webjars/hyperscript.org/dist/_hyperscript.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css" />
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css" />
+    <link rel="stylesheet" th:href="@{/resources/css/style.css}" type="text/css" />
+    <title th:text="#{guestbook.title}">Edit</title>
+</head>
+<body>
+<h1 class="text-center" th:text="#{guestbook.title}">Edit</h1>
+
+<div class="text-center">
+    <a sec:authorize="isAnonymous()" href="/login">Login</a>
+    <a sec:authorize="isAuthenticated()" href="/logout">Logout</a>
+</div>
+
+<br />
+
+<div id="entry" class="mx-auto">
+    <p>Edit Entry</p>
+    <form th:method="post" th:action="@{/edit/{id}(id=${entry.id})}" role="form" class="gb-form" id="form" th:object="${form}" hx:post="@{/edit/{id}(id=${entry.id})}">
+        <div class="form-group">
+            <label for="name" th:text="#{guestbook.form.name}">Name</label><br />
+            <input class="form-control" type="text" th:field="*{name}" th:errorclass="is-invalid" required="required" th:value="${entry.name}"/>
+            <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback" th:text="#{guestbook.form.name.required}">Please provide a name.</div>
+        </div>
+        <div class="form-group">
+            <label for="text" th:text="#{guestbook.form.text}">Text</label><br />
+            <textarea th:field="*{text}" th:errorclass="is-invalid" class="form-control" required="required" th:value="${entry.text}"></textarea>
+            <div th:if="${#fields.hasErrors('text')}" class="invalid-feedback" th:text="#{guestbook.form.text.required}">Please provide a text.</div>
+        </div>
+        <input type="submit" class="btn btn-secondary" value="Senden" />
+    </form>
+
+</div>
+
+</body>
+</html>

@@ -30,6 +30,7 @@
 								<span class="fas fa-times"></span>
 							</button>
 						</form>
+						<a th:href="@{edit/{id}(id=${entry.id})}">edit</a>
 						<h4 th:text="${index} + '. ' + ${entry.name}" class="card-title">1. Posting</h4>
 					</div>
 					<div class="card-body">

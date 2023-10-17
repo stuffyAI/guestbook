@@ -15,23 +15,21 @@
  */
 package guestbook;
 
+import Edit.EditForm;
 import io.github.wimdeblauwe.hsbt.mvc.HtmxResponse;
 import io.github.wimdeblauwe.hsbt.mvc.HxRequest;
 import jakarta.validation.Valid;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -83,6 +81,24 @@ class GuestbookController {
 		model.addAttribute("form", form);
 
 		return "guestbook";
+	}
+
+	@GetMapping(path = "/edit/{entry}")
+	String editView(Model model, @ModelAttribute(binding = false) GuestbookForm form, @PathVariable String entry) {
+
+		model.addAttribute("entry", guestbook.findById(Long.valueOf(entry)).get());
+		model.addAttribute("form", form);
+
+		return "edit";
+	}
+
+	@PostMapping(path = "/edit/{entry}")
+	String editEntry(@Valid @ModelAttribute("form") GuestbookForm form, Errors errors, Model model, @PathVariable String entry) {
+		GuestbookEntry entryToEdit = guestbook.findById(Long.valueOf(entry)).get();
+		entryToEdit.setName(form.getName());
+		entryToEdit.setText(form.getName());
+		guestbook.save(entryToEdit);
+		return "redirect:/guestbook";
 	}
 
 	/**
@@ -178,4 +194,5 @@ class GuestbookController {
 
 		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 	}
+
 }
