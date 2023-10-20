@@ -31,6 +31,8 @@ import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * A controller to handle web requests to manage {@link GuestbookEntry}s
@@ -93,12 +95,12 @@ class GuestbookController {
 	}
 
 	@PostMapping(path = "/edit/{entry}")
-	String editEntry(@Valid @ModelAttribute("form") GuestbookForm form, Errors errors, Model model, @PathVariable String entry) {
+	ModelAndView editEntry(@Valid @ModelAttribute("form") GuestbookForm form, Errors errors, Model model, @PathVariable String entry) {
 		GuestbookEntry entryToEdit = guestbook.findById(Long.valueOf(entry)).get();
 		entryToEdit.setName(form.getName());
 		entryToEdit.setText(form.getName());
 		guestbook.save(entryToEdit);
-		return "redirect:/guestbook";
+		return new ModelAndView("redirect:/guestbook");
 	}
 
 	/**
@@ -120,7 +122,7 @@ class GuestbookController {
 
 		guestbook.save(form.toNewEntry());
 
-		return "redirect:/guestbook";
+		return "redirect:guestbook";
 	}
 
 	/**
